@@ -1,12 +1,13 @@
-package(default_visibility = ["//visibility:private"])
-
 load("//tools:defaults.bzl", "jasmine_node_test", "ng_benchmark", "ng_rollup_bundle", "ts_library")
+
+package(default_visibility = ["//visibility:private"])
 
 ts_library(
     name = "perf_lib",
     srcs = glob(
         ["**/*.ts"],
     ),
+    prodmode_target = "es2020",
     deps = [
         "//packages/core",
         "//packages/core/src/util",
@@ -20,6 +21,19 @@ jasmine_node_test(
     deps = [
         ":perf_lib",
     ],
+)
+
+ng_rollup_bundle(
+    name = "await_vs_promise_lib",
+    entry_point = ":await_vs_promise/index.ts",
+    deps = [
+        ":perf_lib",
+    ],
+)
+
+ng_benchmark(
+    name = "await_vs_promise",
+    bundle = ":await_vs_promise_lib",
 )
 
 ng_rollup_bundle(
